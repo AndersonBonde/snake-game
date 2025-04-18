@@ -44,7 +44,19 @@ function createSnake(p, size) {
   }
 
   function checkDeath() {
-    
+    const head = snake[0];
+
+    for (let i = 1; i < snake.length; i++) {
+      const cur = snake[i];
+      const dist = p.dist(head.x, head.y, cur.x, cur.y);
+
+      if (dist < 5) {
+        snake = [head];
+        return true;
+      }
+    }
+
+    return false;
   }
 
   return {
