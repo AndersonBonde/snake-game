@@ -23,7 +23,7 @@ const sketch = (p) => {
     snake.show();
     
     if (snake.eat(food.getPos())) 
-      food.updatePos();
+      food.updatePos(snake.getBody());
 
     food.show();
   };

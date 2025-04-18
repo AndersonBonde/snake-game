@@ -9,8 +9,18 @@ function createFood(p, size) {
     return newPos.mult(size);
   }
 
-  function updatePos() {
-    pos = pickNewLocation();
+  function isOnSnake(newPos, snakeBody) {
+    return snakeBody.some((segment) => segment.x === newPos.x && segment.y === newPos.y);
+  }
+
+  function updatePos(snakeBody) {
+    let newPos;
+
+    do {
+      newPos = pickNewLocation();
+    } while (isOnSnake(newPos, snakeBody));
+
+    pos = newPos;
   }
 
   function show() {

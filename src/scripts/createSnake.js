@@ -59,6 +59,10 @@ function createSnake(p, size) {
     return false;
   }
 
+  function getBody() {
+    return snake.map((segment) => segment.copy());
+  }
+
   return {
     get xSpeed() { return speed.x },
     get ySpeed() { return speed.y },
@@ -67,6 +71,7 @@ function createSnake(p, size) {
     dir,
     eat,
     checkDeath,
+    getBody,
   }
 }
 
