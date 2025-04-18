@@ -1,20 +1,17 @@
 function createSnake(p, size) {
-  let x = 0;
-  let y = 0;
-  let xSpeed = 1;
-  let ySpeed = 0;
+  let pos = p.createVector(0, 0);
+  let speed = p.createVector(1, 0);
   let ateFood = true;
   let snake = [];
   
   function update() {
-    x += xSpeed * size;
-    y += ySpeed * size;
+    pos.x += speed.x * size;
+    pos.y += speed.y * size;
 
-    x = p.constrain(x, 0, p.width - size);
-    y = p.constrain(y, 0, p.height - size);
+    pos.x = p.constrain(pos.x, 0, p.width - size);
+    pos.y = p.constrain(pos.y, 0, p.height - size);
 
-    const newPos = p.createVector(x, y);
-    snake.unshift(newPos);
+    snake.unshift(pos.copy());
 
     if (!ateFood) {
       snake.pop();
@@ -26,17 +23,17 @@ function createSnake(p, size) {
   function show() {
     p.fill(255);
     for (let i = 0; i < snake.length; i++) {
-      p.rect(snake[i].x, snake[i].y, size, size);
+      const cur = snake[i];
+      p.rect(cur.x, cur.y, size, size);
     }
   }
 
   function dir(newX, newY) {
-    xSpeed = newX;
-    ySpeed = newY;
+    speed = p.createVector(newX, newY);
   }
 
-  function eat(pos) {
-    const distance = p.dist(x, y, pos.x, pos.y);
+  function eat(foodPos) {
+    const distance = p.dist(pos.x, pos.y, foodPos.x, foodPos.y);
     
     if (distance < 5) {
       ateFood = true;
@@ -51,8 +48,8 @@ function createSnake(p, size) {
   }
 
   return {
-    get xSpeed() { return xSpeed },
-    get ySpeed() { return ySpeed },
+    get xSpeed() { return speed.x },
+    get ySpeed() { return speed.y },
     update,
     show,
     dir,

@@ -4,12 +4,12 @@ import createSnake from './scripts/createSnake';
 import createFood from './scripts/createFood';
 
 const sketch = (p) => {
-  const size = 30;
+  const size = 40;
   const snake = createSnake(p, size);
   let food;
 
   p.setup = () => {
-    const canvas = p.createCanvas(600, 600);
+    const canvas = p.createCanvas(400, 400);
     canvas.parent(document.querySelector('main'));
     p.frameRate(10);
 
