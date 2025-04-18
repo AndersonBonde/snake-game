@@ -3,30 +3,31 @@ function createSnake(p, size) {
   let y = 0;
   let xSpeed = 1;
   let ySpeed = 0;
-  let total = 0;
-  let tail = [];
+  let ateFood = true;
+  let snake = [];
   
   function update() {
-    if (total === tail.length) {
-      for (let i = 0; i < tail.length - 1; i++) {
-        tail[i] = tail[i + 1];
-      }
-    }
-    tail[total - 1] = p.createVector(x, y);
-
     x += xSpeed * size;
     y += ySpeed * size;
 
     x = p.constrain(x, 0, p.width - size);
     y = p.constrain(y, 0, p.height - size);
+
+    const newPos = p.createVector(x, y);
+    snake.unshift(newPos);
+
+    if (!ateFood) {
+      snake.pop();
+    } else {
+      ateFood = false;
+    }
   }
 
   function show() {
     p.fill(255);
-    for (let i = 0; i < tail.length; i++) {
-      p.rect(tail[i].x, tail[i].y, size, size);
+    for (let i = 0; i < snake.length; i++) {
+      p.rect(snake[i].x, snake[i].y, size, size);
     }
-    p.rect(x, y, size, size);
   }
 
   function dir(newX, newY) {
@@ -38,7 +39,7 @@ function createSnake(p, size) {
     const distance = p.dist(x, y, pos.x, pos.y);
     
     if (distance < 5) {
-      total++;
+      ateFood = true;
       return true;
     }
     
@@ -46,18 +47,7 @@ function createSnake(p, size) {
   }
 
   function checkDeath() {
-    for (let i = 0; i < tail.length; i++) {
-      const distance = p.dist(x, y, tail[i].x, tail[i].y);
-
-      if (distance < 5) {
-        total = 0;
-        tail = [];
-
-        return true;
-      }
-    }
-
-    return false;
+    
   }
 
   return {
