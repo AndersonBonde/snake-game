@@ -5,6 +5,8 @@ function createSketch(p) {
   const size = 40;
   const snake = createSnake(p, size);
   let food;
+  let directionChange;
+  let queueDirection;
 
   p.setup = () => {
     const canvas = p.createCanvas(400, 400);
@@ -15,6 +17,13 @@ function createSketch(p) {
   };
 
   p.draw = () => {
+    if (queueDirection && !directionChange) {
+      const { dx, dy } = queueDirection;
+      snake.dir(dx, dy);
+      directionChange = true;
+      queueDirection = null;
+    }
+    
     p.background(60);
     snake.checkDeath();
     snake.update();
@@ -22,26 +31,31 @@ function createSketch(p) {
     
     if (snake.eat(food.pos)) 
       food.updatePos(snake.getBody());
-
+    
     food.show();
+
+    directionChange = false;
+  };
+
+  function trySetDirection(dx, dy) {
+    const { xSpeed, ySpeed } = snake;
+
+    if ((dx !== -xSpeed || dy !== -ySpeed)) {
+      if (!directionChange) {
+        snake.dir(dx, dy);
+        directionChange = true;
+      } else {
+        queueDirection = { dx, dy };
+      }
+    }
   };
 
   p.keyPressed = () => {
-    const { xSpeed, ySpeed } = snake;
-
     switch (p.keyCode) {
-      case (p.UP_ARROW): 
-        if (ySpeed !== 1) snake.dir(0, -1); 
-        break;
-      case (p.DOWN_ARROW): 
-       if (ySpeed !== -1) snake.dir(0, 1); 
-       break;
-      case (p.RIGHT_ARROW): 
-        if (xSpeed !== -1) snake.dir(1, 0); 
-        break;
-      case (p.LEFT_ARROW): 
-        if (xSpeed !== 1) snake.dir(-1, 0); 
-        break;
+      case (p.UP_ARROW): trySetDirection(0, -1); break;
+      case (p.DOWN_ARROW): trySetDirection(0, 1); break;
+      case (p.RIGHT_ARROW): trySetDirection(1, 0); break;
+      case (p.LEFT_ARROW): trySetDirection(-1, 0); break;
     }
   };
 }
