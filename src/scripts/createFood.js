@@ -29,7 +29,7 @@ function createFood(p, size) {
   }
 
   return {
-    getPos: () => pos.copy(),
+    get pos() { return pos.copy() },
     updatePos,
     show,
   }

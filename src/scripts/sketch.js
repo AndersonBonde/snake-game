@@ -20,7 +20,7 @@ function createSketch(p) {
     snake.update();
     snake.show();
     
-    if (snake.eat(food.getPos())) 
+    if (snake.eat(food.pos)) 
       food.updatePos(snake.getBody());
 
     food.show();
