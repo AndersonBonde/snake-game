@@ -2,8 +2,8 @@ const createSnake = require("./createSnake");
 const createFood = require("./createFood");
 
 function createSketch(p) {
-  const size = 40;
-  const snake = createSnake(p, size);
+  const size = 25;
+  let snake;
   let food;
   let directionChange;
   let queueDirection;
@@ -13,6 +13,7 @@ function createSketch(p) {
     canvas.parent(document.querySelector('main'));
     p.frameRate(10);
 
+    snake = createSnake(p, size);
     food = createFood(p, size);
   };
 
