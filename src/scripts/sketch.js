@@ -1,10 +1,13 @@
 const createSnake = require("./createSnake");
 const createFood = require("./createFood");
+const createScoreTracker = require('./scoreTracker');
+const { updateScoreDisplay } = require('./UIController');
 
 function createSketch(p) {
   const size = 25;
   let snake;
   let food;
+  let scoreTracker;
   let directionChange;
   let queueDirection;
 
@@ -15,6 +18,8 @@ function createSketch(p) {
 
     snake = createSnake(p, size);
     food = createFood(p, size);
+    scoreTracker = createScoreTracker();
+    updateScoreDisplay(scoreTracker.score);
   };
 
   p.draw = () => {
@@ -26,12 +31,20 @@ function createSketch(p) {
     }
     
     p.background(60);
-    snake.checkDeath();
+
+    if (snake.checkDeath()) {
+      scoreTracker.reset();
+      updateScoreDisplay(scoreTracker.score);
+    }
+
     snake.update();
     snake.show();
     
-    if (snake.eat(food.pos)) 
+    if (snake.eat(food.pos)) {
       food.updatePos(snake.getBody());
+      scoreTracker.increment();
+      updateScoreDisplay(scoreTracker.score);
+    }
     
     food.show();
 
