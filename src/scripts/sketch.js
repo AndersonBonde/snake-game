@@ -10,6 +10,7 @@ function createSketch(p) {
   let scoreTracker;
   let directionChange;
   let queueDirection;
+  let isPaused = true;
 
   p.setup = () => {
     const canvas = p.createCanvas(400, 400);
@@ -20,9 +21,16 @@ function createSketch(p) {
     food = createFood(p, size);
     scoreTracker = createScoreTracker();
     updateScoreDisplay(scoreTracker.score);
+    checkPause();
   };
-
+  
   p.draw = () => {
+    if (snake.checkDeath()) {
+      scoreTracker.reset();
+      updateScoreDisplay(scoreTracker.score);
+      pause();
+    }
+
     if (queueDirection && !directionChange) {
       const { dx, dy } = queueDirection;
       snake.dir(dx, dy);
@@ -31,11 +39,6 @@ function createSketch(p) {
     }
     
     p.background(60);
-
-    if (snake.checkDeath()) {
-      scoreTracker.reset();
-      updateScoreDisplay(scoreTracker.score);
-    }
 
     snake.update();
     snake.show();
@@ -64,12 +67,46 @@ function createSketch(p) {
     }
   };
 
+  function checkPause() {
+    if (isPaused) p.noLoop();
+    else p.loop();
+  }
+  
+    function pause() {
+      isPaused = true;
+      checkPause();
+    }
+
+  function unpause(dx, dy) {
+    const { xSpeed, ySpeed } = snake;
+
+    if ((dx !== -xSpeed || dy !== -ySpeed && isPaused)) {
+      isPaused = false;
+    }
+
+    checkPause();
+  }
+
   p.keyPressed = () => {
-    switch (p.keyCode) {
-      case (p.UP_ARROW): trySetDirection(0, -1); break;
-      case (p.DOWN_ARROW): trySetDirection(0, 1); break;
-      case (p.RIGHT_ARROW): trySetDirection(1, 0); break;
-      case (p.LEFT_ARROW): trySetDirection(-1, 0); break;
+    const directions = {
+      [p.UP_ARROW]: { dx: 0, dy: -1 },
+      [p.DOWN_ARROW]: { dx: 0, dy: 1 },
+      [p.LEFT_ARROW]: { dx: -1, dy: 0 },
+      [p.RIGHT_ARROW]: { dx: 1, dy: 0 },
+    }
+
+    if (directions[p.keyCode]) {
+      const { dx, dy } = directions[p.keyCode];
+      
+      trySetDirection(dx, dy);
+      if (isPaused) unpause(dx, dy);
+
+      return;
+    }
+
+    if (p.keyCode === 32) {
+      isPaused = !isPaused;
+      checkPause();
     }
   };
 }
